@@ -13,8 +13,8 @@ def isPalindrome(s: str) -> bool:
         # print(str_list[i])
         # print(str_list[len(str_list) - i - 1])
         if str_list[i] != str_list[len(str_list) - i - 1]:
-            return False;
-    return True;
+            return False
+    return True
 
 def dequeIsPalindrome(self, s: str) -> bool:
     # 자료형 데크로 선언
