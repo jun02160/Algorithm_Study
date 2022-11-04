@@ -2,6 +2,7 @@
 from typing import List
 
 class Solution:
+    # 1. 오름차순 풀이 => 나의 풀이
     def arrayPairSum(self, nums: List[int]) -> int:
         nums.sort()
         temp = []
@@ -15,5 +16,16 @@ class Solution:
 
         return sum
 
+    # 2. 짝수 번째 값 게산
+    def arrayPairSumEven(self, nums: List[int]) -> int:
+        sum = 0
+        nums.sort()
+
+        for i in range(0, len(nums), 2):
+            sum += nums[i]
+
+        return sum
+
 a = Solution()
 print(a.arrayPairSum([1,3,2,4]))
+print(a.arrayPairSumEven([1,3,2,4]))
