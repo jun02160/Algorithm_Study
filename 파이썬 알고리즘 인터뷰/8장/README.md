@@ -272,3 +272,178 @@ node.next를 이전 prev 리스트로 계속 연결하면서 마지막에 다다
 입력값에 대한 합을 먼저 구하고, 자릿수가 넘어가는 경우에 자리 올림수를 설정하여 계산한다. 이는 이전의 자리올림수인 carry를 받아오고 이를 divmod()로 계산하는 방식이며, 그 다음의 연산에도 사용될 수 있다는 특징을 가진다. 
 
 ex. (2→4→3) + (5→6→4) ⇒ 3 + 4 = (0, 7) / 4 + 6 = (1, 0) / 2 + 5 = (0+***1*** , 7)
+---
+
+# 페어의 노드 스왑
+
+[Swap Nodes in Pairs - LeetCode](https://leetcode.com/problems/swap-nodes-in-pairs/)
+
+## Problem
+
+연결 리스트를 입력받아 페어 단위로 스왑하는 문제
+
+### ISSUE
+
+- 앞에서 두 개씩 묶어서 스왑한다.
+- 연결리스트이므로 노드 자체를 스왑하는 방법과 값만 바꿔치기 하는 방식 모두 구현할 수 있다.
+- 풀이
+    
+    ```python
+    def swapPairs(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        cur = head
+        while cur and cur.next:
+            temp = cur.val
+            cur.val = cur.next.val
+            cur.next.val = temp
+    
+            cur = cur.next.next
+    
+        return head
+    ```
+    
+
+## Solution
+
+### 1. 값만 교환
+
+연결 리스트의 노드를 변경하는 것이 아닌, 노드 구조는 그대로 유지하되 값만 변경하는 방법
+
+### 2. 반복 구조로 스왑
+
+노드 자체를 변경하려면 이전 노드와 다음 노드에 연결된 현재 노드를 다루는 것이므로, 임시 노드를 거쳐서 스왑시켜야 한다. 아래와 같이 b라는 임시 노드에 할당 후 안전하게 스왑할 수 있다. 
+
+```python
+b = a.next
+a.next = b.next
+b.next = b
+```
+
+하지만, 이밖에 고려해야 할 점은 이전 노드와의 연결이 끊어졌다는 것이다. 따라서 아래와 같이 이전 노드와 연결하는 부분이 필요하다.
+
+```python
+prev.next = b   # 이전 노드와 연결하기
+```
+
+다음 페어를 스왑하기 위해 전진한다. 
+
+```python
+a = a.next 
+prev = prev.next.next
+```
+
+반복 구조의 풀이는 리스트의 현재 노드와 스왑할 노드 각각 가리키는 포인터가 필요하므로, 총 두 개의 포인터를 필요로 한다. 이를 조금 더 간단하게 구현하려면 재귀 구조로 풀이하는 방법이 있다.
+
+### 3. 재귀 구조로 스왑
+
+재귀 구조는 하나의 포인터만을 필요로 하며, 더미 노드를 만들 필요 없이 head를 바로 리턴한다. 재귀 호출로 스왑된 값을 바로 리턴받으며 백트래킹되면서 연결 리스트가 끊기지 않고 연결될 수 있다. 
+
+```python
+def swapPairs(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        if head and head.next:
+            p = head.next   # 포인터 역할
+
+            # 스왑된 값을 리턴받음
+            head.next = self.swapPairs3(p.next)
+            p.next = head
+            return p    
+        return head
+```
+
+---
+
+# 홀짝 연결 리스트
+
+[Odd Even Linked List - LeetCode](https://leetcode.com/problems/odd-even-linked-list/)
+
+## Problem
+
+연결 리스트를 홀수 노드 다음에 짝수 노드가 오도록 재구성하는 문제 
+
+조건 - *공간 복잡도 O(1), 시간 복잡도 O(n)에 풀이하라*
+
+### ISSUE
+
+- 한 번의 루프로 해결할 수 있어야 한다.
+- 리스트의 총 길이를 먼저 알고, 홀짝 각 개수를 파악한다.
+- 홀수는 `head`부터, 짝수는 `head.next` 부터 시작한다.
+    - 이들은 각각 두 칸씩 이동한다.
+- 제약 조건이 없었다면 연결 리스트를 파이썬의 리스트 형태로 변환해서 파이썬 슬라이싱, 내장 함수 등으로 쉽게 풀이할 수 있다.
+
+## Solution
+
+### 1. 반복 구조로 홀짝 노드 처리
+
+홀수의 헤더를 odd로, 짝수의 헤더를 even_head로 하고 리스트를 순회하는 포인터는 even으로 설정한다. 
+
+```python
+while even and even.next:
+    odd.next = odd.next.next
+    odd = odd.next
+    even.next = even.next.next
+    even = even.next
+```
+
+위와 같은 반복 구조로 리스트를 순회하게 되는데, 이를 파이썬 스타일로 다중 할당 처리하면 가능한 경우는 홀수와 짝수를 동시에 움직이는 것 뿐이다. 즉, 위 코드에서 1~2 / 3~4 를 묶는 것은 불가능하고, 1,3 / 2,4 로만 묶을 수 있다는 것이다. 가능한 이유는 홀수 번째 노드와 짝수 번째 노드를 처음부터 각각의 포인터로 순회하고 독립적으로 동작하기 때문이다. 
+
+여기서 홀수 다음에 짝수가 오도록 하는 중요한 부분은 **홀수 노드의 마지막을 짝수의 헤드로 연결하는 것이다.** 
+
+```python
+odd.next = even_head   # 짝수의 헤드를 반복문을 돌기 전에 미리 저장해둔다. 
+```
+
+---
+
+# 역순 연결 리스트 II
+
+[Reverse Linked List II - LeetCode](https://leetcode.com/problems/reverse-linked-list-ii/)
+
+## Problem
+
+주어진 인덱스 m~n까지 역순으로 만드는 문제  *인덱스 m은 1부터 시작
+
+### ISSUE
+
+- 이전 풀이와 같이 재귀 구조와 반복 구조로 풀이하는 방식 모두 존재한다.
+- 리스트를 순회하는 포인터의 시작을 head에서 m만큼 이동한 후에, 이전 역순 리스트 풀이와 동일하게 풀이하면 된다.
+- 해당 인덱스 범위의 리스트를 따로 만들어서 역순으로 뒤집은 뒤에 다시 붙이는 방법도 고려해볼 수 있다.
+
+- 풀이
+    
+    ```python
+    def swapPairs(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        cur = head
+        while cur and cur.next:
+            temp = cur.val
+            cur.val = cur.next.val
+            cur.next.val = temp
+    
+            cur = cur.next.next
+    
+        return head
+    ```
+    
+
+## Solution
+
+### 1. 반복 구조로 노드 뒤집기
+
+리스트의 시작(start)과 끝(end)을 각각 시작 인덱스-1, 시작 인덱스로 고정 시켜두고, head 보다 이전에 위치한 root를 할당하여 결과값은 root.next로 반환한다. 따라서 위 예제 상으로 start가 2일 때, start와 end는 각각 1과 2로 마지막까지 유지되며 이를 기준으로 리스트를 역순으로 뒤집는다. 
+
+```python
+# start와 next는 고정
+for _ in range(left - 1):
+    start = start.next
+end = start.next
+```
+
+`시작 인덱스-1` 의 노드를 start로 두고, 그 다음 `시작 인덱스` 의 노드를 end로 둔다. 
+
+```python
+# start(시작 인덱스 직전)와 end(시작 인덱스) 범위에서의 리스트 뒤집기 반복
+for _ in range(right - left):
+    tmp, start.next, end.next = start.next, end.next, end.next.next
+    start.next.next = tmp
+return root.next
+```
+
+더미 노드를 이용해서 범위 내의 노드들을 뒤집는 코드이다.
