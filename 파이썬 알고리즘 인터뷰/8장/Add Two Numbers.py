@@ -59,7 +59,7 @@ class Solution:
 
         return self.toReversedLinkedList(str(resultStr))
 
-    # 3.
+    # 3. 전가산기 구현
     def addTwoNumbers3(self, l1: Optional[ListNode], l2: Optional[ListNode]) -> Optional[ListNode]:
         root = head = ListNode(0)
 
