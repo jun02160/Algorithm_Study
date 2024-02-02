@@ -1,29 +1,34 @@
-import java.util.Scanner;
+import java.io.*;
+import java.util.*;
 
 public class Main {
 
-	public static void main(String[] args) {
-		int n1;
-		int n2;
-		
-		Scanner sc = new Scanner(System.in);
-		n1 = sc.nextInt();
-		n2 = sc.nextInt();
-		sc.close();
-		
-		int result = gcd(n1, n2);
-		
-		System.out.println(result);
-        System.out.println(n1*n2/result);	
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+
+		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+		StringBuilder sb = new StringBuilder();
+
+		int a = Integer.parseInt(st.nextToken());
+		int b = Integer.parseInt(st.nextToken());
+
+		sb.append(gcd(a, b)).append("\n");
+		sb.append(lcm(a, b)).append("\n");
+		System.out.println(sb);
 	}
 
-    private static int gcd(int a, int b) {
+	// 최대공약수
+	private static int gcd(int a, int b) {
+		return b > 0 ? gcd(b, a%b) : a;
+	}
 
-        while (b != 0) {
-            int r = a % b;
-            a = b;
-            b = r;
-        }
-        return a;
-    }
+	// 최소공배수
+	private static int lcm(int a, int b) {
+		return a / gcd(a, b) * b;
+	}
+
+
+
+
 }
