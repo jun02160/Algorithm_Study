@@ -18,21 +18,14 @@ public class Main {
 			numArr[i] = Integer.parseInt(st.nextToken());
 		}
 
-		int result = 0;
-		for (int i=0; i<N; i++) {
-			int tmp = 0;
-
-			for (int j=i; j<N; j++) {
-				tmp += numArr[j];
-				if (tmp == M) {
-					result++;
-					break;
-				} else if (tmp > M) {
-					break;
-				}
-			}
+		int ans = 0;  // 정답
+		int now = 0;
+		// 투 포인터로 접근
+		for (int i=0, j=0; j<N; j++) {
+			now += numArr[j];
+			while (now > M) now -= numArr[i++];
+			if (now == M) ans++;
 		}
-
-		System.out.println(result);
-	}
+		System.out.println(ans);
+    }
 }
