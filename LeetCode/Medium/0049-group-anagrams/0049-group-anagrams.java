@@ -6,7 +6,11 @@ class Solution {
         for (String str : strs) {
             char[] chs = str.toCharArray();  // String -> char[]
             Arrays.sort(chs);
-            String key = String.valueOf(chs);
+            String key = String.valueOf(chs); 
+            /**
+            In Kotlin,
+            val key = str.toCharArray().sorted().joinToStrng("");
+            */
             
             if (!result.containsKey(key)) {
                 result.put(key, new ArrayList<>());
